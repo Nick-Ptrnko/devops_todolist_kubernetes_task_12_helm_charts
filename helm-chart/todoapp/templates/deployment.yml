@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+#  name: todoapp
+  name: {{ .Chart.Name }}
+#  namespace: todoapp
+  namespace: {{ .Values.namespace }}
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+#      maxSurge: 1
+#      maxUnavailable: 1
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+  selector:
+    matchLabels:
+#      app: todoapp
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+#        app: todoapp
+        app: {{ .Chart.Name }}
+    spec:
+#     Керування ServiceAccount з values.yaml
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.repo.image }}:{{ .Values.repo.tag }}"
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        - name: app-secrets-volume
+          mountPath: "/app/secrets"
+          readOnly: true
+        - name: app-config-volume
+          mountPath: "/app/configs"
+          readOnly: true
+        resources:
+          requests:
+            memory: {{ .Values.requests.memory }}
+            cpu: {{ .Values.requests.cpu }}
+          limits:
+            memory: {{ .Values.limits.memory }}
+            cpu: {{ .Values.limits.cpu }}
+        env:
+        - name: PYTHONUNBUFFERED
+          valueFrom:
+            configMapKeyRef:
+#              name: app-config
+              name: {{ .Chart.Name }}-config
+              key: PYTHONUNBUFFERED
+#        - name: SECRET_KEY
+#          valueFrom:
+#            secretKeyRef:
+#              name: {{ .Chart.Name }}-secret
+#              key: SECRET_KEY
+#        - name: DB_NAME
+#          valueFrom:
+#            secretKeyRef:
+#              name: {{ .Chart.Name }}-secret
+#              key: DB_NAME
+#        - name: DB_USER
+#          valueFrom:
+#            secretKeyRef:
+#              name: {{ .Chart.Name }}-secret
+#              key: DB_USER
+#        - name: DB_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: {{ .Chart.Name }}-secret
+#              key: DB_PASSWORD
+        # Динамічний мапінг усіх секретів через range
+        {{- range $key, $val := .Values.appSecrets }}
+        - name: {{ $key }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $.Chart.Name }}-secret
+              key: {{ $key }}
+        {{- end }}
+        - name: DB_HOST
+          value: {{ .Values.dbHost | quote }}
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+#          claimName: pvc-data
+          claimName: {{ .Chart.Name }}-data
+      - name: app-secrets-volume
+        secret:
+#          secretName: app-secret
+          secretName: {{ .Chart.Name }}-secret
+      - name: app-config-volume
+        configMap:
+#          name: app-config
+          name: {{ .Chart.Name }}-config

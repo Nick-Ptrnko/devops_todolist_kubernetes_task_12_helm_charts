@@ -4,7 +4,7 @@ metadata:
 #  name: mysql
   name: {{ .Chart.Name }}
 #  namespace: mysql
-  namespace: {{ .Values.namespace }}
+#  namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
@@ -70,7 +70,7 @@ spec:
               name: {{ .Chart.Name }}-secrets
               key: MYSQL_PASSWORD
         - name: MYSQL_DATABASE
-          value: app_db
+          value: todoapp
         ports:
         - name: mysql
           containerPort: 3306

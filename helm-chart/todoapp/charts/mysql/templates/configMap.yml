@@ -3,14 +3,23 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}
 #  namespace: mysql
-  namespace: {{ .Values.namespace }}
+#  namespace: {{ .Values.namespace }}
   labels:
 #    app: mysql
     app: {{ .Chart.Name }}
+#data:
+#  init.sql: |
+#    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
+#    USE app_db;
+#    CREATE TABLE counter (
+#        id INT AUTO_INCREMENT PRIMARY KEY,
+#        value INT
+#    );
+
 data:
   init.sql: |
-    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'%';
-    USE app_db;
+    GRANT ALL PRIVILEGES ON todoapp.* TO 'todo_user'@'%';
+    USE todoapp;
     CREATE TABLE counter (
         id INT AUTO_INCREMENT PRIMARY KEY,
         value INT

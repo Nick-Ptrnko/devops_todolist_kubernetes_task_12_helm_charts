@@ -9,7 +9,7 @@ image:
 pvc: 2Gi
 
 requests:
-  memory: 0.7Gi
+  memory: 716Mi
   cpu: 300m
 limits:
   memory: 1Gi
@@ -17,8 +17,8 @@ limits:
 
 configs:
   MYSQL_ROOT_PASSWORD: "1234"
-  MYSQL_USER: "app_user"
-  MYSQL_PASSWORD: "1234"
+  MYSQL_USER: "todo_user"
+  MYSQL_PASSWORD: "secure_password"
 
 tolerations:
   - key: "app"
@@ -45,3 +45,9 @@ affinity:
                 - mysql
         topologyKey: "kubernetes.io/hostname"
 
+
+mysqlSecrets:
+  mysql-root-password: "root_password"
+  mysql-password: "secure_password"
+  mysql-database: "todoapp"
+  mysql-user: "todo_user"

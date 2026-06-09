@@ -1,1 +1,78 @@
 namespace: mateapp
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 1
+
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - todoapp
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - todoapp
+      topologyKey: "kubernetes.io/hostname"
+
+repo:
+  image: ikulyk404/todoapp
+  tag: 4.0.1
+
+requests:
+  memory: "256Mi"
+  cpu: "150m"
+limits:
+  memory: "256Mi"
+  cpu: "150m"
+
+dbHost: "mysql"
+
+livenessProbe:
+  httpGet:
+    path: api/health
+    port: 8080
+  initialDelaySeconds: 60
+  periodSeconds: 5
+readinessProbe:
+  httpGet:
+    path: api/ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+tolerations: []
+
+# Керування назвою ServiceAccount
+serviceAccount:
+  name: "todoapp-sa"
+
+# Секрети додатка (вписуються в чистому вигляді)
+appSecrets:
+  SECRET_KEY: "my-secret-key"
+  DB_NAME: "todoapp"
+  DB_USER: "todo_user"
+  DB_PASSWORD: "secure_password"
+
+# Параметри для HPA
+hpa:
+  minReplicas: 2
+  maxReplicas: 5
+  cpuUtilization: 70
+  memoryUtilization: 70
+
+# Параметри для томів
+pv:
+  capacity: "1Gi"
+
+pvc:
+  storage: "1Gi"

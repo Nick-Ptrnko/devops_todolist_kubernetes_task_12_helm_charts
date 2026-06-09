@@ -4,7 +4,7 @@ metadata:
 #  name: pv-data
   name: {{ .Chart.Name }}-pv
 #  namespace: todoapp
-  namespace: {{ .Values.namespace }}
+#  namespace: {{ .Values.namespace }}
 spec:
   storageClassName: standard
   persistentVolumeReclaimPolicy: Delete

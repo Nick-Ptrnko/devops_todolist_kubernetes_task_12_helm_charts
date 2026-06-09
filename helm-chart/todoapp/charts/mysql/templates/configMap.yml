@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}
 #  namespace: mysql
-#  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
 #    app: mysql
     app: {{ .Chart.Name }}

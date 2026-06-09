@@ -5,7 +5,7 @@ metadata:
 #  name: mysql
   name: {{ .Chart.Name }}
 #  namespace: mysql
-#  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
 #    app: mysql

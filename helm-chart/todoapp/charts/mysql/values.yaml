@@ -19,6 +19,7 @@ configs:
   MYSQL_ROOT_PASSWORD: "1234"
   MYSQL_USER: "todo_user"
   MYSQL_PASSWORD: "secure_password"
+  MYSQL_DATABASE: "todoapp"
 
 tolerations:
   - key: "app"

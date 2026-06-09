@@ -25,11 +25,11 @@ kubectl taint nodes -l app=mysql app=mysql:NoSchedule
 # --- НОВИЙ ПІДХІД ЗГІДНО ЗАВДАННЯ (HELM ДЕПЛОЙ) ---
 echo "Updating Helm chart dependencies..."
 # Підтягуємо залежності (субчарт mysql), які ми прописали в Chart.yaml
-helm dependency update helm-chart/todoapp
+helm dependency update .infrastructure/helm-chart/todoapp
 
 echo "Deploying todoapp helm chart..."
 # Встановлюємо або оновлюємо наш головний Helm-чарт
-helm upgrade --install todoapp helm-chart/todoapp -n mateapp --create-namespace
+helm upgrade --install todoapp .infrastructure/helm-chart/todoapp -n mateapp --create-namespace
 # -------------------------------------------------
 
 echo "Waiting for TodoApp pods to be ready..."
